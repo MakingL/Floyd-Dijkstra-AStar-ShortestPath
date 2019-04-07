@@ -47,50 +47,43 @@ if __name__ == '__main__':
     road_data_path = "./data/road.txt"
     graphObj = Graph()
     load_data_and_build_graph(road_data_path, graphObj)
+    print("max edge weight: {}".format(graphObj.max_weight))
+    print("mini edge weight: {}".format(graphObj.min_weight))
+    print("average edge weight: {}".format(graphObj.get_average_weight()))
+    print()
 
     floyd = Floyd(graphObj)
     dijkstra = Dijkstra(graphObj)
-    a_star = AStar(graphObj, floyd, gama=0.5)
+    a_star = AStar(graphObj, floyd, gama=0.4)
 
     sourceNode = "7"
     dstNode = "1957"
-    floydCost = floyd.get_dist(sourceNode, dstNode)
+    shortest_path, floydCost = floyd.get_shortest_path(sourceNode, dstNode)
+    print("Floyd path: {} Floyd cost: {}".format(shortest_path, floydCost))
 
     last_cost = 0
 
     dijkstraPath = []
     dijkstraCost = 0
     start_time = time.clock()
-    for i in range(1000 * 10):
+    for i in range(100):
         dijkstraPath, dijkstraCost = dijkstra.dijkstra_search(sourceNode, dstNode)
-        if i == 0:
-            last_cost = dijkstraCost
-        else:
-            if last_cost != dijkstraCost:
-                print("dijkstra has no same cost")
     end_time = time.clock()
     dijkstra_time_cost = end_time - start_time
 
     aStarPath = []
     aStarCost = 0
     start_time = time.clock()
-    for i in range(1000 * 10):
+    for i in range(100):
         aStarPath, aStarCost = a_star.aStar(sourceNode, dstNode)
-        if i == 0:
-            last_cost = dijkstraCost
-        else:
-            if last_cost != dijkstraCost:
-                print("AStar has no same cost")
     end_time = time.clock()
     a_star_time_cost = end_time - start_time
 
     if dijkstraCost != aStarCost:
         print("Dijkstra cost is not equal a star cost\n")
+
+    print("Dijkstra path: {} dijkstra cost: {}, spent time: {}".format(dijkstraPath, dijkstraCost, dijkstra_time_cost))
+    print("AStar path: {} AStar cost: {}, spent time: {}".format(aStarPath, aStarCost, a_star_time_cost))
+
+    print()
     print("Dijkstra cost time is slower than AStar: {}".format(dijkstra_time_cost - a_star_time_cost))
-
-    print("Floyd cost: {}".format(floydCost))
-    # print("Dijkstra path: {} dijkstra cost: {}, spent time: {}".format(dijkstraPath, dijkstraCost, dijkstra_time_cost))
-    # print("AStar path: {} AStar cost: {}, spent time: {}".format(aStarPath, aStarCost, a_star_time_cost))
-
-    print("Dijkstra cost: {}, path length: {}, spent time: {}".format(dijkstraCost, len(dijkstraPath), dijkstra_time_cost))
-    print("AStar cost: {}, path length: {}, spent time: {}".format(aStarCost, len(aStarPath), a_star_time_cost))

@@ -2,8 +2,6 @@
 # @Time    : 2019/3/25 12:38
 # @Author  : MLee
 # @File    : AStar.py
-# import logging
-import logging
 from collections import deque
 
 
@@ -89,14 +87,17 @@ class AStar:
             current = self.getLowest(openSet, fScore)
             if current == goal:
                 return self.reconstructPath(cameFrom, goal), gScore[goal]
+
             openSet.remove(current)
             closedSet.add(current)
+
             for edge_id, edge in self.neighborNodes(current).items():
-                adjacent_id = edge_id
+                adjacent_id = edge.end_id
 
                 tentative_gScore = gScore[current] + self.distBetween(edge)
                 if adjacent_id in closedSet and tentative_gScore >= gScore[adjacent_id]:
                     continue
+
                 if adjacent_id not in closedSet or tentative_gScore < gScore[adjacent_id]:
                     cameFrom[adjacent_id] = current
                     gScore[adjacent_id] = tentative_gScore

@@ -7,6 +7,9 @@ from collections import deque
 
 
 class PriorityQueue:
+    """
+        优先队列
+    """
     def __init__(self):
         self.elements = []
 
@@ -27,16 +30,27 @@ class PriorityQueue:
 
 
 class Dijkstra(object):
-    """docstring for Dijkstra"""
+    """Dijkstra 算法求最短路"""
 
     def __init__(self, graph):
         super(Dijkstra, self).__init__()
         self.graph = graph
 
     def get_neighbors(self, current):
+        """
+        获得邻居节点
+        :param current:
+        :return:
+        """
         return self.graph.get_neighbors(current)
 
     def dijkstra_search(self, start, goal):
+        """
+        Dijkstra 算法求最短路
+        :param start:  源点
+        :param goal:  终点
+        :return: (最短路径， 路长)
+        """
         frontier = PriorityQueue()
         frontier.clear()
         frontier.put(start, 0)
@@ -53,6 +67,7 @@ class Dijkstra(object):
 
             for edge_id, edge in self.get_neighbors(current).items():
                 next_node_id = edge.end_id
+
                 new_cost = cost_so_far[current] + self.cost(edge)
                 if next_node_id not in cost_so_far or new_cost < cost_so_far[next_node_id]:
                     cost_so_far[next_node_id] = new_cost

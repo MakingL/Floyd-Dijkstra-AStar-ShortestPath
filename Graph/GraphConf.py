@@ -2,8 +2,6 @@
 # @Time    : 2019/3/26 9:18
 # @Author  : MLee
 # @File    : GraphConf.py
-import math
-from collections import deque
 
 
 class Road(object):
@@ -12,9 +10,8 @@ class Road(object):
     def __init__(self, road_conf):
         super(Road, self).__init__()
         self.road_id, self.road_len, self.speed_limit, self.chanel, self.start_id, self.end_id = road_conf
-        self.weight = int(self.road_len)
-        # self.weight = 1
-        self.traveled_times = 0
+        self.weight = self.road_len / (self.speed_limit * self.chanel) + 1
+        # self.weight = 2
 
 
 class Graph(object):
@@ -31,7 +28,18 @@ class Graph(object):
         self.total_chanel = 0
         self.total_speed = 0
 
+        self.min_weight = 0x3f3f3f3f
+        self.max_weight = 0
+        self.total_weight = 0
+
     def add_edge(self, start_id, edge_id, edge):
+        """
+        新增边操作；更新图的联接表，更新顶点集、边集
+        :param start_id:
+        :param edge_id:
+        :param edge:
+        :return:
+        """
         # 联接表
         if start_id not in self.graph_dict:
             self.graph_dict[start_id] = set()
@@ -59,6 +67,13 @@ class Graph(object):
         # 顶点集
         self.add_vertex(start_id)
         self.add_vertex(edge.end_id)
+
+        self.min_weight = min(edge.weight, self.min_weight)
+        self.max_weight = max(edge.weight, self.max_weight)
+        self.total_weight += edge.weight
+
+    def get_average_weight(self):
+        return self.total_weight / self.get_edge_count()
 
     def get_neighbors(self, current_id):
         neighbors = dict()
@@ -126,6 +141,10 @@ class Graph(object):
         return edge_id
 
     def get_graph_dict(self):
+        """
+        返回图的联接表
+        :return:
+        """
         return self.graph_dict
 
     def get_edge_dict(self):
